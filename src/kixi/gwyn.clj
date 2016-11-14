@@ -1,2 +1,1 @@
-(ns kixi.gwyn
-  )
+(ns kixi.gwyn)
