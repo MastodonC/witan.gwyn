@@ -1,5 +1,7 @@
-(ns kixi.gwyn
-  (:require [witan.workspace-api :refer [defworkflowfn definput defworkflowoutput]]
+(ns kixi.gwyn.gwyn
+  (:require [witan.workspace-api :refer [defworkflowfn
+                                         definput
+                                         defworkflowoutput]]
             [kixi.gwyn.schemas :as sc]))
 
 (definput fire-station-lookup-table-1-0-0

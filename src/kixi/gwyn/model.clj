@@ -1,8 +1,8 @@
 (ns kixi.gwyn.model
-  (:require [witan.workspace-api :refer [defmodel]
-             [witan.workspace-api.protocols :as p]
-             [witan.workspace-api.utils :refer [map-fn-meta
-                                                map-model-meta]]]))
+  (:require [witan.workspace-api :refer [defmodel]]
+            [witan.workspace-api.protocols :as p]
+            [witan.workspace-api.utils :refer [map-fn-meta
+                                               map-model-meta]]))
 
 (def gwyn-model-workflow
   "Define each step of the model"
@@ -25,6 +25,6 @@
   []
   (reify p/IModelLibrary
     (available-fns [_]
-      ())
+      (map-fn-meta))
     (available-models [_]
-      ())))
+      (map-model-meta gwyn-model))))
