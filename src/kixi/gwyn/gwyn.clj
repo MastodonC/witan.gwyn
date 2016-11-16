@@ -26,8 +26,8 @@
 (defworkflowfn extract-fire-station-geo-data-1-0-0
   {:witan/name :fire-risk/extract-fire-station-geo-data
    :witan/version "1.0.0"
-   :witan/input-schema {:fire-station-lookup-table sc/FireStations
-                        :fire-station s/Str}
+   :witan/input-schema {:fire-station-lookup-table sc/FireStations}
+   :witan/param-schema {:fire-station s/Str}
    :witan/output-schema {:fire-station-geo-data sc/FireStationGeoData}}
   [{:keys [fire-station-lookup-table]} {:keys [fire-station]}]
   {:fire-station-geo-data {}})

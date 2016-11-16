@@ -9,4 +9,5 @@
                  [prismatic/schema "1.1.3"]]
   :main ^:skip-aot kixi.gwyn
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:dev {:dependencies [[witan.workspace-executor "0.2.6"
+                                   :exclusions [witan.workspace-api]]]}})
