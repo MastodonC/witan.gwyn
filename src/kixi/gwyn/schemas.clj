@@ -24,3 +24,19 @@
   (make-ordered-ds-schema [[:station s/Str] [:area_km2 java.lang.Double]
                            [:radius java.lang.Double] [:lat java.lang.Double]
                            [:long java.lang.Double]]))
+
+(def LfbHistoricIncidents)
+
+(def HistoricalFireRiskScores)
+
+(def FireStationGeoData)
+
+(def CommercialProperties)
+
+(def GenericFireRisk)
+
+(def CommercialPropertiesWithScores)
+
+(def HistoricalFireRiskScores)
+
+(def NewFireRiskScores)

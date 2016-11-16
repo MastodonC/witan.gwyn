@@ -2,7 +2,8 @@
   (:require [witan.workspace-api :refer [defmodel]]
             [witan.workspace-api.protocols :as p]
             [witan.workspace-api.utils :refer [map-fn-meta
-                                               map-model-meta]]))
+                                               map-model-meta]]
+            [kixi.gwyn.gwyn :as g]))
 
 (def gwyn-model-workflow
   "Define each step of the model"
@@ -84,6 +85,16 @@
   []
   (reify p/IModelLibrary
     (available-fns [_]
-      (map-fn-meta))
+      (map-fn-meta g/fire-station-lookup-table-1-0-0
+                   g/lfb-historic-incidents-1-0-0
+                   g/historical-fire-risk-scores-1-0-0
+                   g/extract-fire-station-geo-data-1-0-0
+                   g/list-commercial-properties-1-0-0
+                   g/filter-by-commercial-properties-type-1-0-0
+                   g/generic-commercial-properties-fire-risk-1-0-0
+                   g/associate-risk-score-to-commercial-properties-1-0-0
+                   g/join-historical-and-new-scores-1-0-0
+                   g/update-score-with-priority-1-0-0
+                   g/output-new-fire-risk-scores-1-0-0))
     (available-models [_]
       (map-model-meta gwyn-model))))
