@@ -74,8 +74,8 @@
   [{:keys [commercial-properties-with-scores historical-fire-risk-scores]} _]
   {:historical-and-new-scores {}})
 
-(defworkflowfn update-score-with-priority-1-0-0
-  {:witan/name :fire-risk/update-score-with-priority
+(defworkflowfn update-score-1-0-0
+  {:witan/name :fire-risk/update-score
    :witan/version "1.0.0"
    :witan/input-schema {:historical-and-new-scores sc/HistoricalFireRiskScores}
    :witan/output-schema {:new-fire-risk-scores sc/NewFireRiskScores}}

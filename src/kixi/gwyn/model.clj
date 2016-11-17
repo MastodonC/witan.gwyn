@@ -15,8 +15,8 @@
    [:list-commercial-properties :associate-risk-score-to-commercial-properties]
    [:associate-risk-score-to-commercial-properties :join-historical-and-new-scores]
    [:historical-fire-risk-scores :join-historical-and-new-scores]
-   [:join-historical-and-new-scores :update-score-with-priority]
-   [:update-score-with-priority :output-new-fire-risk-scores]])
+   [:join-historical-and-new-scores :update-score]
+   [:update-score :output-new-fire-risk-scores]])
 
 (def gwyn-model-catalog
   "Provides metadata for each step in the model"
@@ -62,10 +62,10 @@
     :witan/version "1.0.0"
     :witan/type :function
     :witan/fn :fire-risk/join-historical-and-new-scores}
-   {:witan/name :update-score-with-priority
+   {:witan/name :update-score
     :witan/version "1.0.0"
     :witan/type :function
-    :witan/fn :fire-risk/update-score-with-priority}
+    :witan/fn :fire-risk/update-score}
    ;; Output function
    {:witan/name :output-new-fire-risk-scores
     :witan/version "1.0.0"
@@ -74,7 +74,7 @@
 
 (defmodel gwyn-model
   "Defines the model"
-  {:witan/name :gwyn-model
+  {:witan/name :fire-risk/gwyn-model
    :witan/version "1.0.0"}
   {:workflow gwyn-model-workflow
    :catalog gwyn-model-catalog})
@@ -94,7 +94,7 @@
                    g/generic-commercial-properties-fire-risk-1-0-0
                    g/associate-risk-score-to-commercial-properties-1-0-0
                    g/join-historical-and-new-scores-1-0-0
-                   g/update-score-with-priority-1-0-0
+                   g/update-score-1-0-0
                    g/output-new-fire-risk-scores-1-0-0))
     (available-models [_]
       (map-model-meta gwyn-model))))
