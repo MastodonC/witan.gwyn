@@ -9,8 +9,8 @@
   "Define each step of the model"
   [[:fire-stations-lookup :extract-fire-station-geo-data]
    [:extract-fire-station-geo-data :list-commercial-properties]
-   [:lfb-historic-incidents :filter-by-commercial-properties-type]
-   [:filter-by-commercial-properties-type :generic-commercial-properties-fire-risk]
+   [:lfb-historic-incidents :group-commercial-properties-type]
+   [:group-commercial-properties-type :generic-commercial-properties-fire-risk]
    [:generic-commercial-properties-fire-risk :associate-risk-score-to-commercial-properties]
    [:list-commercial-properties :associate-risk-score-to-commercial-properties]
    [:associate-risk-score-to-commercial-properties :join-historical-and-new-scores]
@@ -46,10 +46,10 @@
     :witan/version "1.0.0"
     :witan/type :function
     :witan/fn :fire-risk/list-commercial-properties}
-   {:witan/name :filter-by-commercial-properties-type
+   {:witan/name :group-commercial-properties-type
     :witan/version "1.0.0"
     :witan/type :function
-    :witan/fn :fire-risk/filter-by-commercial-properties-type}
+    :witan/fn :fire-risk/group-commercial-properties-type}
    {:witan/name :generic-commercial-properties-fire-risk
     :witan/version "1.0.0"
     :witan/type :function
@@ -90,7 +90,7 @@
                    g/historical-fire-risk-scores-1-0-0
                    g/extract-fire-station-geo-data-1-0-0
                    g/list-commercial-properties-1-0-0
-                   g/filter-by-commercial-properties-type-1-0-0
+                   g/group-commercial-properties-type-1-0-0
                    g/generic-commercial-properties-fire-risk-1-0-0
                    g/associate-risk-score-to-commercial-properties-1-0-0
                    g/join-historical-and-new-scores-1-0-0
