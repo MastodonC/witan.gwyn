@@ -55,7 +55,7 @@
    (->> (wds/group-ds lfb-historic-incidents :property-type)
         (mapv (fn [[map-key ds]]
                 (let [n (first (:shape ds))
-                      avg (fn [coll] (/ (apply + coll) n))
+                      avg (fn [coll] (u/safe-divide (apply + coll) n))
                       coll-pumps-attending (u/make-coll
                                             (wds/subset-ds ds :cols :num-pumps-attending))]
                   (merge map-key

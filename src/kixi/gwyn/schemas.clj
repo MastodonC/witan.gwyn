@@ -38,8 +38,8 @@
 (def CommercialProperties
   (make-ordered-ds-schema [[:property-type s/Str]
                            [:num-fires s/Int]
-                           [:avg-pumps-attending s/Num]
-                           [:sd-pumps-attending s/Num]]))
+                           [:avg-pumps-attending java.lang.Double]
+                           [:sd-pumps-attending java.lang.Double]]))
 
 (def GenericFireRisk
   {})

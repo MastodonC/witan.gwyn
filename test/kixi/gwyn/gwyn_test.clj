@@ -15,7 +15,7 @@
                        (hash-map k (tu/csv-to-dataset p s)))
                      data-info)))
 
-(deftest filter-by-commercial-properties-type-test
+(deftest group-commercial-properties-type-test
   (testing "The function returns the properties data needed for score calc"
     (let [result (group-commercial-properties-type-1-0-0 test-data)
           result-data (:commercial-properties-by-type result)]
