@@ -15,9 +15,9 @@
 (deftest test-for-forbidden-fields
   (testing "csv's have forbidden fields present"
     (let [files (map (fn [x] (.getPath x)) (file-seq (io/file "data/")))
-          csv-files (filter #(re-find #"\.csv$" %) files)]
-      (is (true? (empty? (if (not-empty csv-files)
-                           (let [headers (map #(first (open-csv %)) csv-files)]
-                             (mapcat (fn [x]
-                                       (filter (fn [z] ((set x) z)) forbidden-fields))
-                                     headers)))))))))
+          csv-files (filter (fn [f] (re-find #"\.csv$" f)) files)]
+      (is (empty? (if (not-empty csv-files)
+                    (let [headers (map (comp first open-csv) csv-files)]
+                      (mapcat (fn [x]
+                                (filter (fn [z] ((set x) z)) forbidden-fields))
+                              headers))))))))
