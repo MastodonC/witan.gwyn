@@ -3,7 +3,12 @@
                                          definput
                                          defworkflowoutput]]
             [schema.core :as s]
-            [kixi.gwyn.schemas :as sc]))
+            [kixi.gwyn.schemas :as sc]
+            [clojure.core.matrix.dataset :as ds]
+            [witan.datasets :as wds]
+            [witan.datasets.stats :as wst]
+            [kixi.gwyn.utils :as u]
+            [kixi.stats.core :refer [mean standard-deviation]]))
 
 (definput fire-station-lookup-table-1-0-0
   {:witan/name :fire-risk/fire-station-lookup-table
@@ -40,13 +45,26 @@
   [{:keys [fire-station-geo-data]} _]
   {:commercial-properties {}})
 
-(defworkflowfn filter-by-commercial-properties-type-1-0-0
-  {:witan/name :fire-risk/filter-by-commercial-properties-type
+(defworkflowfn group-commercial-properties-type-1-0-0
+  {:witan/name :fire-risk/group-commercial-properties-type
    :witan/version "1.0.0"
    :witan/input-schema {:lfb-historic-incidents sc/LfbHistoricIncidents}
    :witan/output-schema {:commercial-properties-by-type sc/CommercialProperties}}
   [{:keys [lfb-historic-incidents]} _]
-  {:commercial-properties-by-type {}})
+  {:commercial-properties-by-type
+   (->> (wds/group-ds lfb-historic-incidents :property-type)
+        (mapv (fn [[map-key ds]]
+                (let [n (first (:shape ds))
+                      avg (fn [coll] (u/safe-divide (apply + coll) n))
+                      coll-pumps-attending (u/make-coll
+                                            (wds/subset-ds ds :cols :num-pumps-attending))]
+                  (merge map-key
+                         {:num-fires n
+                          :avg-pumps-attending
+                          (avg coll-pumps-attending)
+                          :sd-pumps-attending (wst/standard-deviation
+                                               coll-pumps-attending)}))))
+        ds/dataset)})
 
 (defworkflowfn generic-commercial-properties-fire-risk-1-0-0
   {:witan/name :fire-risk/generic-commercial-properties-fire-risk

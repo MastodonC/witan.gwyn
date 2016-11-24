@@ -20,16 +20,14 @@
                   (s/one datatype fieldname)))
         (:column-names col-schema)))
 
-;; (def FireStations
-;;   (make-ordered-ds-schema [[:station s/Str] [:area_km2 java.lang.Double]
-;;                            [:radius java.lang.Double] [:lat java.lang.Double]
-;;                            [:long java.lang.Double]]))
-
 (def FireStations
-  {})
+  (make-ordered-ds-schema [[:station s/Str] [:area_km2 java.lang.Double]
+                           [:radius java.lang.Double] [:lat java.lang.Double]
+                           [:long java.lang.Double]]))
 
 (def LfbHistoricIncidents
-  {})
+  (make-ordered-ds-schema [[:property-type s/Str]
+                           [:num-pumps-attending s/Int]]))
 
 (def HistoricalFireRiskScores
   {})
@@ -38,7 +36,10 @@
   {})
 
 (def CommercialProperties
-  {})
+  (make-ordered-ds-schema [[:property-type s/Str]
+                           [:num-fires s/Int]
+                           [:avg-pumps-attending java.lang.Double]
+                           [:sd-pumps-attending java.lang.Double]]))
 
 (def GenericFireRisk
   {})
