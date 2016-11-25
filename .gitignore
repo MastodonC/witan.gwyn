@@ -4,3 +4,4 @@
 .lein-failures
 .nrepl-port
 target/
+*.DS_Store
