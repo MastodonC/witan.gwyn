@@ -78,7 +78,7 @@
   (-> properties-data
       (wds/add-derived-column :adjusted-avg-pumps [:sd-pumps-attending :avg-pumps-attending]
                               (fn [sd avg] (if (> sd 2) ;; have to chose what this value should be
-                                             (+ avg (/ sd 2))
+                                             (+ avg (u/safe-divide sd 2))
                                              avg)))
       (ds/select-columns [:property-type :num-fires :adjusted-avg-pumps :sd-pumps-attending])))
 
@@ -95,6 +95,7 @@
    Use the sorting order to assign a score to each property type."
   [sorted-properties-data]
   (-> sorted-properties-data
+      ;;(wds/add-derived-column :generic-fire-risk-score [] )
       ))
 
 (defworkflowfn generic-commercial-properties-fire-risk-1-0-0

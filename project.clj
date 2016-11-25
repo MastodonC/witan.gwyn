@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [net.mikera/core.matrix "0.55.0"]
                  [org.clojure/data.csv "0.1.3"]
-                 [witan.workspace-api "0.1.21"]
+                 [witan.workspace-api "0.1.22"]
                  [prismatic/schema "1.1.3"]
                  [kixi/stats "0.2.1"]]
   :main ^:skip-aot kixi.gwyn
