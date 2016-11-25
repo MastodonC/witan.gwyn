@@ -41,7 +41,7 @@
     :witan/version "1.0.0"
     :witan/type :function
     :witan/fn :fire-risk/extract-fire-station-geo-data
-    :witan/params {:fire-station "foo"}}
+    :witan/params {:fire-station "Twickenham"}}
    {:witan/name :list-commercial-properties
     :witan/version "1.0.0"
     :witan/type :function
