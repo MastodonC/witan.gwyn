@@ -76,8 +76,29 @@
                           :commercial-properties-by-type
                           adjust-avg-num-pumps
                           sort-by-pumps-and-fires)
-          ;; added-scores (assign-generic-scores sorted-data)
-          ]
-      ;;(is (ds/dataset? added-scores))
-      ;;(is (= (second (:shape added-scores)) 5))
-      )))
+          added-scores (assign-generic-scores sorted-data)]
+      (println added-scores)
+      (is (ds/dataset? added-scores))
+      (is (= (second (:shape added-scores)) 2))
+      (is (= (set (:column-names added-scores))
+             #{:property-type :generic-fire-risk-score})))))
+
+(deftest generic-commercial-properties-fire-risk-test
+  (testing "The creation of the generic fire risk scores"
+    (let [ds-scores (-> test-data
+                        group-commercial-properties-type-1-0-0
+                        generic-commercial-properties-fire-risk-1-0-0
+                        :generic-fire-risks)
+          scores (wds/subset-ds ds-scores :cols :generic-fire-risk-score)]
+      (is (> (wds/subset-ds ds-scores
+                            :cols :generic-fire-risk-score
+                            :rows (dec (first (:shape ds-scores))))
+             (wds/subset-ds ds-scores
+                            :cols :generic-fire-risk-score
+                            :rows 0)))
+      (is (= (apply max scores) (wds/subset-ds ds-scores
+                                               :cols :generic-fire-risk-score
+                                               :rows (dec (first (:shape ds-scores))))))
+      (is (= (apply min scores) (wds/subset-ds ds-scores
+                                               :cols :generic-fire-risk-score
+                                               :rows 0))))))

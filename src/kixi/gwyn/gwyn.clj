@@ -95,8 +95,10 @@
    Use the sorting order to assign a score to each property type."
   [sorted-properties-data]
   (-> sorted-properties-data
-      ;;(wds/add-derived-column :generic-fire-risk-score [] )
-      ))
+      (as-> data (ds/add-column data
+                                :generic-fire-risk-score
+                                (range 1 (inc (first (:shape data))))))
+      (ds/select-columns [:property-type :generic-fire-risk-score])))
 
 (defworkflowfn generic-commercial-properties-fire-risk-1-0-0
   "Takes in a dataset with number of fires, average and standard deviation for the
