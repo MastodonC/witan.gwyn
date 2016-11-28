@@ -21,7 +21,7 @@
         (:column-names col-schema)))
 
 (def FireStations
-  (make-ordered-ds-schema [[:station s/Str] [:area_km2 java.lang.Double]
+  (make-ordered-ds-schema [[:station s/Str] [:area_m2 java.lang.Double]
                            [:radius java.lang.Double] [:lat java.lang.Double]
                            [:long java.lang.Double]]))
 
