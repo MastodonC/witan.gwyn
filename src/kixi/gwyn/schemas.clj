@@ -33,7 +33,8 @@
   {})
 
 (def FireStationGeoData
-  {})
+  (make-ordered-ds-schema [[:radius java.lang.Double] [:lat java.lang.Double]
+                           [:long java.lang.Double]]))
 
 (def CommercialProperties
   (make-ordered-ds-schema [[:property-type s/Str]

@@ -35,8 +35,10 @@
    :witan/param-schema {:fire-station s/Str}
    :witan/output-schema {:fire-station-geo-data sc/FireStationGeoData}}
   [{:keys [fire-station-lookup-table]} {:keys [fire-station]}]
-  {:fire-station-geo-data {}})
-
+  {:fire-station-geo-data
+   (-> fire-station-lookup-table
+       (wds/select-from-ds {:station fire-station})
+       (wds/subset-ds :cols [:radius :lat :long]))})
 (defworkflowfn list-commercial-properties-1-0-0
   {:witan/name :fire-risk/list-commercial-properties
    :witan/version "1.0.0"
