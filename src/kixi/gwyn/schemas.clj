@@ -37,6 +37,9 @@
                            [:long java.lang.Double]]))
 
 (def CommercialProperties
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:type [s/Str]] [:id s/Str]]))
+
+(def CommercialPropertyTypes
   (make-ordered-ds-schema [[:property-type s/Str]
                            [:num-fires s/Int]
                            [:avg-pumps-attending java.lang.Double]
