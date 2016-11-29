@@ -4,7 +4,6 @@
             [kixi.gwyn.schemas :as sc]
             [schema.core :as s]
             [kixi.gwyn.test-utils :as tu]
-            [clojure.data.csv :as data-csv]
             [witan.datasets :as wds]
             [clojure.core.matrix.dataset :as ds]))
 

@@ -94,7 +94,7 @@
   "Takes in the properties dataset sorted by pumps and fires.
    Use the sorting order to assign a score to each property type."
   [sorted-properties-data]
-  (let [range-data (range 1 (inc (first (:shape sorted-properties-data))))]
+  (let [range-data (range 1 (-> sorted-properties-data :shape first inc))]
     (-> sorted-properties-data
         (ds/add-column :generic-fire-risk-score range-data)
         (ds/select-columns [:property-type :generic-fire-risk-score]))))
