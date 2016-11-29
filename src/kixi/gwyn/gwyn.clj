@@ -77,7 +77,7 @@
   [properties-data]
   (-> properties-data
       (wds/add-derived-column :adjusted-avg-pumps [:sd-pumps-attending :avg-pumps-attending]
-                              (fn [sd avg] (if (> sd 2) ;; have to chose what this value should be
+                              (fn [sd avg] (if (> sd 2) ;; value to be refined
                                              (+ avg (u/safe-divide sd 2))
                                              avg)))
       (ds/select-columns [:property-type :num-fires :adjusted-avg-pumps :sd-pumps-attending])))
@@ -94,11 +94,10 @@
   "Takes in the properties dataset sorted by pumps and fires.
    Use the sorting order to assign a score to each property type."
   [sorted-properties-data]
-  (-> sorted-properties-data
-      (as-> data (ds/add-column data
-                                :generic-fire-risk-score
-                                (range 1 (inc (first (:shape data))))))
-      (ds/select-columns [:property-type :generic-fire-risk-score])))
+  (let [range-data (range 1 (inc (first (:shape sorted-properties-data))))]
+    (-> sorted-properties-data
+        (ds/add-column :generic-fire-risk-score range-data)
+        (ds/select-columns [:property-type :generic-fire-risk-score]))))
 
 (defworkflowfn generic-commercial-properties-fire-risk-1-0-0
   "Takes in a dataset with number of fires, average and standard deviation for the

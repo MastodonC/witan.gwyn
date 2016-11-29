@@ -4,6 +4,7 @@
             [kixi.gwyn.schemas :as sc]
             [schema.core :as s]
             [kixi.gwyn.test-utils :as tu]
+            [clojure.data.csv :as data-csv]
             [witan.datasets :as wds]
             [clojure.core.matrix.dataset :as ds]))
 
@@ -77,7 +78,6 @@
                           adjust-avg-num-pumps
                           sort-by-pumps-and-fires)
           added-scores (assign-generic-scores sorted-data)]
-      (println added-scores)
       (is (ds/dataset? added-scores))
       (is (= (second (:shape added-scores)) 2))
       (is (= (set (:column-names added-scores))
