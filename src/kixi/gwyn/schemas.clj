@@ -43,7 +43,8 @@
                            [:sd-pumps-attending java.lang.Double]]))
 
 (def GenericFireRisk
-  {})
+  (make-ordered-ds-schema [[:property-type s/Str]
+                           [:generic-fire-risk-score s/Int]]))
 
 (def CommercialPropertiesWithScores
   {})

@@ -48,6 +48,9 @@
   {:commercial-properties {}})
 
 (defworkflowfn group-commercial-properties-type-1-0-0
+  "Takes in LFB historical incidents data for fires in non-residential properties.
+   Returns the number of fires, average and standard deviation for the number of pumps
+   attending the fire at that type of non-residential property."
   {:witan/name :fire-risk/group-commercial-properties-type
    :witan/version "1.0.0"
    :witan/input-schema {:lfb-historic-incidents sc/LfbHistoricIncidents}
@@ -68,13 +71,47 @@
                                                coll-pumps-attending)}))))
         ds/dataset)})
 
+(defn adjust-avg-num-pumps
+  "Takes in the properties dataset. Adjust the average number of pumps
+   attending the fire depending on the value of the standard deviation."
+  [properties-data]
+  (-> properties-data
+      (wds/add-derived-column :adjusted-avg-pumps [:sd-pumps-attending :avg-pumps-attending]
+                              (fn [sd avg] (if (> sd 2) ;; value to be refined
+                                             (+ avg (u/safe-divide sd 2))
+                                             avg)))
+      (ds/select-columns [:property-type :num-fires :adjusted-avg-pumps :sd-pumps-attending])))
+
+(defn sort-by-pumps-and-fires
+  "Takes in the properties dataset with the average number of pumps adjusted.
+   Sort the property types by average number of pumps and by number of fires."
+  [adjusted-properties-data]
+  (->> (ds/row-maps adjusted-properties-data)
+       (sort-by (juxt :adjusted-avg-pumps :num-fires))
+       ds/dataset))
+
+(defn assign-generic-scores
+  "Takes in the properties dataset sorted by pumps and fires.
+   Use the sorting order to assign a score to each property type."
+  [sorted-properties-data]
+  (let [range-data (range 1 (-> sorted-properties-data :shape first inc))]
+    (-> sorted-properties-data
+        (ds/add-column :generic-fire-risk-score range-data)
+        (ds/select-columns [:property-type :generic-fire-risk-score]))))
+
 (defworkflowfn generic-commercial-properties-fire-risk-1-0-0
+  "Takes in a dataset with number of fires, average and standard deviation for the
+   number of pumps attending the fire for each type of non-residential property.
+   Returns a fire risk score for each type of non-residential property."
   {:witan/name :fire-risk/generic-commercial-properties-fire-risk
    :witan/version "1.0.0"
    :witan/input-schema {:commercial-properties-by-type sc/CommercialProperties}
    :witan/output-schema {:generic-fire-risks sc/GenericFireRisk}}
   [{:keys [commercial-properties-by-type]} _]
-  {:generic-fire-risks {}})
+  {:generic-fire-risks (-> commercial-properties-by-type
+                           adjust-avg-num-pumps
+                           sort-by-pumps-and-fires
+                           assign-generic-scores)})
 
 (defworkflowfn associate-risk-score-to-commercial-properties-1-0-0
   {:witan/name :fire-risk/associate-risk-score-to-commercial-properties
