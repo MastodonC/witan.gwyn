@@ -4,6 +4,7 @@
              [schema.coerce :as coerce]
              [kixi.gwyn.schemas :as sc]
              [schema.core :as s]
+             [clojure.string :as str]
              [clojure.core.matrix.dataset :as ds]))
 
 (defn load-csv
