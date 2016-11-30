@@ -20,7 +20,6 @@
          {:column-names headers
           :columns (vec rm-nil-values)})))))
 
-
 (defn apply-row-schema
   [col-schema csv-data]
   (let [row-schema (sc/make-row-schema col-schema)]
@@ -44,3 +43,8 @@
   (-> (load-csv filepath)
       (apply-schema-coercion schema)
       (as-> {:keys [column-names columns]} (ds/dataset column-names columns))))
+
+(defn to-dataset [dataset]
+  (reduce merge (map (fn [[k [p s]]]
+                       (hash-map k (csv-to-dataset p s)))
+                     dataset)))

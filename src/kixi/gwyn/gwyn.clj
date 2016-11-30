@@ -8,7 +8,8 @@
             [witan.datasets :as wds]
             [witan.datasets.stats :as wst]
             [kixi.gwyn.utils :as u]
-            [kixi.stats.core :refer [mean standard-deviation]]))
+            [kixi.stats.core :refer [mean standard-deviation]]
+            [clojure.data.json :as json]))
 
 (definput fire-station-lookup-table-1-0-0
   {:witan/name :fire-risk/fire-station-lookup-table
@@ -39,13 +40,47 @@
    (-> fire-station-lookup-table
        (wds/select-from-ds {:station fire-station})
        (wds/subset-ds :cols [:radius :lat :long]))})
+
+(def google-places-api "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=")
+
+(defn api-str [loc k]
+  (try (str google-places-api loc "&key=" (System/getenv k))
+       (catch Exception e (str "env var does not exist:" e))))
+
+(defn fetch-url [api-call]
+  (try {:response (slurp api-call)}
+       (catch Exception e {:error (str "Fire station does not exist. Incorrect URL: " e)})))
+
+(defn parse-google-places [api-call]
+  (let [{:keys [response error]} (fetch-url api-call)]
+    (if response
+      (-> response
+          json/read-str
+          (get "results"))
+      (throw (Exception. error)))))
+
+(defn collect-property [json-entry]
+  (hash-map :address (get json-entry "vicinity")
+            :type (get json-entry "types")
+            :id (get json-entry "id")
+            :name (get json-entry "name")))
+
 (defworkflowfn list-commercial-properties-1-0-0
   {:witan/name :fire-risk/list-commercial-properties
    :witan/version "1.0.0"
    :witan/input-schema {:fire-station-geo-data sc/FireStationGeoData}
    :witan/output-schema {:commercial-properties sc/CommercialProperties}}
   [{:keys [fire-station-geo-data]} _]
-  {:commercial-properties {}})
+  {:commercial-properties
+   (let [latitude (first (ds/column fire-station-geo-data :lat))
+         longitude (first (ds/column fire-station-geo-data :long))
+         radius (first (ds/column fire-station-geo-data :radius))
+         api-call (str latitude "," longitude "&radius=" radius)
+         url (api-str api-call "PLACES_API_KEY")]
+     (->> (parse-google-places url)
+          (map collect-property)
+          (into [])
+          ds/dataset))})
 
 (defworkflowfn group-commercial-properties-type-1-0-0
   "Takes in LFB historical incidents data for fires in non-residential properties.
@@ -54,7 +89,7 @@
   {:witan/name :fire-risk/group-commercial-properties-type
    :witan/version "1.0.0"
    :witan/input-schema {:lfb-historic-incidents sc/LfbHistoricIncidents}
-   :witan/output-schema {:commercial-properties-by-type sc/CommercialProperties}}
+   :witan/output-schema {:commercial-properties-by-type sc/CommercialPropertyTypes}}
   [{:keys [lfb-historic-incidents]} _]
   {:commercial-properties-by-type
    (->> (wds/group-ds lfb-historic-incidents :property-type)
@@ -105,7 +140,7 @@
    Returns a fire risk score for each type of non-residential property."
   {:witan/name :fire-risk/generic-commercial-properties-fire-risk
    :witan/version "1.0.0"
-   :witan/input-schema {:commercial-properties-by-type sc/CommercialProperties}
+   :witan/input-schema {:commercial-properties-by-type sc/CommercialPropertyTypes}
    :witan/output-schema {:generic-fire-risks sc/GenericFireRisk}}
   [{:keys [commercial-properties-by-type]} _]
   {:generic-fire-risks (-> commercial-properties-by-type

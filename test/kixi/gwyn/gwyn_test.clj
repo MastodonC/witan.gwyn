@@ -15,14 +15,13 @@
   {:fire-station-lookup-table ["data/fire_station_data.csv" sc/FireStations]})
 
 (def test-data
-  (reduce merge (map (fn [[k [p s]]]
-                       (hash-map k (tu/csv-to-dataset p s)))
-                     data-info)))
+  (tu/to-dataset data-info))
 
 (def fire-stations
-  (reduce merge (map (fn [[k [p s]]]
-                       (hash-map k (tu/csv-to-dataset p s)))
-                     fire-stations-data)))
+  (tu/to-dataset fire-stations-data))
+
+(def foo-location (hash-map :fire-station-geo-data
+                            (ds/dataset [{:radius 1000.1 :lat 51.43444023 :long -0.346214694}])))
 
 (deftest group-commercial-properties-type-test
   (testing "The function returns the properties data needed for score calc"
@@ -101,3 +100,11 @@
       (is (= (apply min scores) (wds/subset-ds ds-scores
                                                :cols :generic-fire-risk-score
                                                :rows 0))))))
+
+(deftest list-commercial-properties-test
+  (testing "function returns properties in the first station's area"
+    (let [result (list-commercial-properties-1-0-0 foo-location)
+          result-data (:commercial-properties result)]
+      (is (ds/dataset? result-data))
+      (is (= (set (:column-names result-data))
+             #{:address :name :type :id})))))
