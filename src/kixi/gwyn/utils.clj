@@ -22,6 +22,10 @@
   [coll]
   (keep not-empty coll))
 
+(defn remove-stopwords
+  [s]
+  (str/replace s #" or | in " ""))
+
 (defn prepare-properties [filepath]
   (->> (-> filepath
            tu/load-csv
@@ -34,7 +38,7 @@
 
 (defn prepare-lfb-data
   [coll]
-  (map #(-> % (str/split #" ") remove-empty) coll))
+  (map #(-> % remove-stopwords (str/split #" ") remove-empty) coll))
 
 (defn find-match
   "Takes as an input a collection of split lfb property names
