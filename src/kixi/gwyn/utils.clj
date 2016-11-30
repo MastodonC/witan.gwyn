@@ -69,10 +69,11 @@
                   (reduce concat)
                   (keep not-empty)
                   (reduce #(merge-with concat %1 %2))
-                  (into [])
-                  (conj [["LFB property names" "Googleapi property names"]]))]
-    (with-open [out-file (io/writer outpath)]
-      (csv/write-csv out-file data))))
+                  (into []))]
+    data
+    ;; (with-open [out-file (io/writer outpath)]
+    ;;   (csv/write-csv out-file (cons ["LFB property names" "Googleapi property names"] data)))
+    ))
 
 (defn remove-deprecated
   [s]
@@ -96,21 +97,28 @@
 ;; I'm trying to keep track of the original names (before cleaning)
 ;; Also here I'm trying to match the whole names (not breaking down LFB names)
 ;; And in the process of producing a data structure easy to write to a csv
-(defn match-properties []
+(defn match-properties [outpath]
   (let [input-lfb (-> "data/test_data/properties_lfb.csv"
                       tu/load-csv
                       :columns)
         input-googleapi (-> "data/test_data/properties_googleapi.csv"
                             tu/load-csv
-                            :columns)]
-    (map (fn [v] (let [lfb-name (first v)
-                       lfb-name-cleaned (clean-lfb lfb-name)]
-                   (conj v
-                         lfb-name-cleaned
-                         (keep (fn [ga] (when (not-empty (re-matches
-                                                         (re-pattern
-                                                          (str ".*" lfb-name-cleaned ".*"))
-                                                         (clean-ga ga)))
-                                         ga))
-                              input-googleapi))))
-         input-lfb)))
+                            :columns)
+        match-whole-strings (mapv (fn [v] (let [lfb-name (first v)
+                                               lfb-name-cleaned (clean-lfb lfb-name)]
+                                           (conj v
+                                                 lfb-name-cleaned
+                                                 (->> input-googleapi
+                                                      (keep
+                                                       (fn [ga]
+                                                         (when
+                                                             (->> (clean-ga ga)
+                                                                  (re-matches
+                                                                   (re-pattern
+                                                                    (str ".*" lfb-name-cleaned".*")))
+                                                                  not-empty)
+                                                             (first ga))))
+                                                      first)))) input-lfb)]
+    (with-open [out-file (io/writer outpath)]
+      (csv/write-csv out-file (cons ["LFB name" "LFB name cleaned" "Googleapi name match"]
+                                    match-whole-strings)))))
