@@ -65,15 +65,15 @@
                   (map #(for [g googleapi-properties]
                           (let [match (find-match % g)]
                             (when (not-empty match)
-                              {% match}))))
+                              [(str/join " " %) (str/join ", " match)]))))
                   (reduce concat)
-                  (keep not-empty)
-                  (reduce #(merge-with concat %1 %2))
+                  (remove nil?)
                   (into []))]
-    data
-    ;; (with-open [out-file (io/writer outpath)]
-    ;;   (csv/write-csv out-file (cons ["LFB property names" "Googleapi property names"] data)))
-    ))
+    (with-open [out-file (io/writer outpath)]
+      (csv/write-csv out-file (cons ["LFB property names" "Googleapi property names"] data)))))
+
+(comment ;; call this function with:
+  (match-property-names "bar.csv"))
 
 (defn remove-deprecated
   [s]
@@ -93,17 +93,22 @@
       remove-deprecated
       str/trim))
 
+(defn match-str
+  [lfb-str googleapi-str]
+  (re-matches (re-pattern (str ".*" lfb-str ".*")) googleapi-str))
+
 ;; Second try
 ;; I'm trying to keep track of the original names (before cleaning)
 ;; Also here I'm trying to match the whole names (not breaking down LFB names)
 ;; And in the process of producing a data structure easy to write to a csv
-(defn match-properties [outpath]
+(defn match-properties [outpath1 outpath2]
   (let [input-lfb (-> "data/test_data/properties_lfb.csv"
                       tu/load-csv
                       :columns)
         input-googleapi (-> "data/test_data/properties_googleapi.csv"
                             tu/load-csv
                             :columns)
+        ;; match string of LFB name w/ string of googleapi name
         match-whole-strings (mapv (fn [v] (let [lfb-name (first v)
                                                lfb-name-cleaned (clean-lfb lfb-name)]
                                            (conj v
@@ -113,12 +118,34 @@
                                                        (fn [ga]
                                                          (when
                                                              (->> (clean-ga ga)
-                                                                  (re-matches
-                                                                   (re-pattern
-                                                                    (str ".*" lfb-name-cleaned".*")))
+                                                                  (match-str lfb-name-cleaned)
                                                                   not-empty)
                                                              (first ga))))
-                                                      first)))) input-lfb)]
-    (with-open [out-file (io/writer outpath)]
+                                                      first)))) input-lfb)
+        ;; match a words in a coll of the LFB name w/ string of googleapi name
+        match-part-strings (mapv (fn [v] (let [lfb-name (first v)
+                                               lfb-name-split (-> lfb-name
+                                                                  clean-lfb
+                                                                  (str/split #" ")
+                                                                  remove-empty)]
+                                           (conj v
+                                                 (str/join " " lfb-name-split)
+                                                 (->> input-googleapi
+                                                      (keep
+                                                       (fn [ga]
+                                                         (when
+                                                             (not-empty
+                                                              (keep #(match-str % (clean-ga ga))
+                                                                        lfb-name-split))
+                                                           (first ga))))
+                                                      first))))
+                            input-lfb)]
+    (with-open [out-file (io/writer outpath1)]
       (csv/write-csv out-file (cons ["LFB name" "LFB name cleaned" "Googleapi name match"]
-                                    match-whole-strings)))))
+                                    match-whole-strings)))
+    (with-open [out-file (io/writer outpath2)]
+      (csv/write-csv out-file (cons ["LFB name" "LFB name cleaned" "Googleapi name matches"]
+                                    match-part-strings)))))
+
+(comment ;; call this function with:
+  (match-properties "foo.csv" "baz.csv"))
