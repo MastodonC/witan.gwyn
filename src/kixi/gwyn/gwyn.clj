@@ -29,6 +29,12 @@
    :witan/key :historical-fire-risk-scores
    :witan/schema sc/HistoricalFireRiskScores})
 
+(definput property-comparison-1-0-0
+  {:witan/name :fire-risk/property-comparison
+   :witan/version "1.0.0"
+   :witan/key :property-comparison
+   :witan/schema sc/PropertyComparison})
+
 (defworkflowfn extract-fire-station-geo-data-1-0-0
   {:witan/name :fire-risk/extract-fire-station-geo-data
    :witan/version "1.0.0"
