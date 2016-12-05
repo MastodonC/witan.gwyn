@@ -30,14 +30,15 @@
                            [:num-pumps-attending s/Int]]))
 
 (def HistoricalFireRiskScores
-  {})
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
+                           [:date-last-risk-assessed s/Any]]))
 
 (def FireStationGeoData
   (make-ordered-ds-schema [[:radius java.lang.Double] [:lat java.lang.Double]
                            [:long java.lang.Double]]))
 
 (def CommercialProperties
-  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:type [s/Str]] [:id s/Str]]))
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:type #{s/Str}] [:id s/Str]]))
 
 (def CommercialPropertyTypes
   (make-ordered-ds-schema [[:property-type s/Str]
@@ -50,13 +51,16 @@
                            [:generic-fire-risk-score s/Int]]))
 
 (def CommercialPropertiesWithScores
-  {})
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
+                           [:date-last-risk-assessed s/Any]]))
 
 (def HistoricalFireRiskScores
-  {})
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
+                           [:date-last-risk-assessed s/Any]]))
 
 (def NewFireRiskScores
-  {})
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
+                           [:date-last-risk-assessed s/Any]]))
 
 (def PropertyComparison
   (make-ordered-ds-schema [[:lfb-property-type s/Str] [:google-property-type s/Str]]))

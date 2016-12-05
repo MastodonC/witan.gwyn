@@ -14,11 +14,20 @@
 (def fire-stations-data
   {:fire-station-lookup-table ["data/fire_station_data.csv" sc/FireStations]})
 
+(def property-comparison-data
+  {:property-comparison ["data/lfb_to_google.csv" sc/PropertyComparison]})
+
+(def historical-fire-risk-scores
+  {:historical-fire-risk-scores ["data/template-historical-fire-risk-scores.csv" sc/HistoricalFireRiskScores]})
+
 (def test-data
   (tu/to-dataset data-info))
 
 (def fire-stations
   (tu/to-dataset fire-stations-data))
+
+(def property-comparison
+  (tu/to-dataset property-comparison-data))
 
 (def foo-location (hash-map :fire-station-geo-data
                             (ds/dataset [{:radius 1000.1 :lat 51.43444023 :long -0.346214694}])))
@@ -108,3 +117,17 @@
       (is (ds/dataset? result-data))
       (is (= (set (:column-names result-data))
              #{:address :name :type :id})))))
+
+(deftest associate-risk-score-to-commercial-properties-test
+  (testing "function returns properties with added cols :risk-score & :date-last-risk-assessed"
+    (let [result (associate-risk-score-to-commercial-properties-1-0-0
+                  (merge (-> test-data
+                             group-commercial-properties-type-1-0-0
+                             generic-commercial-properties-fire-risk-1-0-0)
+                         (-> foo-location
+                             list-commercial-properties-1-0-0)
+                         property-comparison))
+          result-data (:commercial-properties-with-scores result)]
+      (is (ds/dataset? result-data))
+      (is (= (set (:column-names result-data))
+             #{:address :name :risk-score :date-last-risk-assessed})))))
