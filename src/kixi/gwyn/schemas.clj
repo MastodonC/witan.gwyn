@@ -57,3 +57,6 @@
 
 (def NewFireRiskScores
   {})
+
+(def PropertyComparison
+  (make-ordered-ds-schema [[:lfb-property-type s/Str] [:google-property-type s/Str]]))

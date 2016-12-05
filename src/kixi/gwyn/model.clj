@@ -11,6 +11,7 @@
    [:extract-fire-station-geo-data :list-commercial-properties]
    [:lfb-historic-incidents :group-commercial-properties-type]
    [:group-commercial-properties-type :generic-commercial-properties-fire-risk]
+   [:property-comparison :associate-risk-score-to-commercial-properties]
    [:generic-commercial-properties-fire-risk :associate-risk-score-to-commercial-properties]
    [:list-commercial-properties :associate-risk-score-to-commercial-properties]
    [:associate-risk-score-to-commercial-properties :join-historical-and-new-scores]
@@ -35,6 +36,11 @@
     :witan/version "1.0.0"
     :witan/type :input
     :witan/fn :fire-risk/historical-fire-risk-scores
+    :witan/params {:src ""}}
+   {:witan/name :property-comparison
+    :witan/version "1.0.0"
+    :witan/type :input
+    :witan/fn :fire-risk/property-comparison
     :witan/params {:src ""}}
    ;; Calculations functions
    {:witan/name :extract-fire-station-geo-data
@@ -87,6 +93,7 @@
     (available-fns [_]
       (map-fn-meta g/fire-station-lookup-table-1-0-0
                    g/lfb-historic-incidents-1-0-0
+                   g/property-comparison-1-0-0
                    g/historical-fire-risk-scores-1-0-0
                    g/extract-fire-station-geo-data-1-0-0
                    g/list-commercial-properties-1-0-0

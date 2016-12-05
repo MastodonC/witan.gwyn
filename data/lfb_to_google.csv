@@ -1,0 +1,116 @@
+lfb-property-type,google-property-type
+Swimming Pool ,gym
+Art Gallery ,art_gallery
+Cricket ground ,stadium
+Greyhound stadium ,stadium
+Town Hall ,city_hall
+Casino ,casino
+Day care/Drop in centre,school
+Health Centre ,doctor
+Fire station ,fire_station
+Tennis Courts ,stadium
+Vehicle sales building,car_dealer
+Vehicle sales building,car_rental
+Other transport building ,transit_station
+Cinema ,movie_theater
+Bus/coach station/garage ,bus_station
+Doctors surgery,doctor
+DIY Warehouse ,hardware_store
+Train station - platform (at ground level or elevated) ,train_station
+Central Government Office,local_government_office
+Other car park structure,parking
+Police station ,police
+Large supermarket ,convenience_store
+Department Store ,department_store
+Multi-Storey car park,parking
+Dental surgery,dentist
+Train station - concourse ,train_station
+Petrol station ,gas_station
+Sports Hall ,stadium
+Club/night club ,night_club
+Pre School/nursery ,school
+Hairdresser ,beauty_salon
+Hairdresser ,hair_care
+Estate Agent ,real_estate_agency
+Underground car park,parking
+Shopping Centre ,shopping_mall
+Other medical establishment (including surgery) ,doctor
+Other indoor sporting venue ,bowling_alley
+Laundrette ,laundry
+College/University ,university
+Museum ,museum
+Football stadium ,stadium
+Bakery,bakery
+Post office (purpose built) ,post_office
+Synagogue ,synagogue
+Railway building - other,train_station
+Other education establishment,school
+Airport - terminal ,airport
+Leisure Centre ,gym
+Infant/Primary school,school
+Secondary school,school
+Athletics Stadium ,stadium
+Travel Agent ,travel_agency
+Airport - hangar ,airport
+Veterinary surgery,veterinary_care
+Airport building (not terminal or hangar) ,airport
+Temple ,hindu_temple
+Medical/health centre,doctor
+Purpose built office ,accounting
+Purpose built office ,embassy
+Purpose built office ,insurance_agency
+Purpose built office ,lawyer
+Purpose built office ,moving_company
+Other outdoor sporting venue ,gym
+Bank/Building Society ,bank
+Indoor stadium ,stadium
+Train station - platform (below ground) ,subway_station
+Single shop ,clothing_store
+Single shop ,electrician
+Single shop ,book_store
+Single shop ,florist
+Single shop ,funeral_home
+Single shop ,home_goods_store
+Single shop ,jewelry_store
+Single shop ,liquor_store
+Single shop ,locksmith
+Single shop ,movie_rental
+Single shop ,painter
+Single shop ,pet_store
+Single shop ,pharmacy
+Single shop ,plumber
+Single shop ,roofing_contractor
+Single shop ,shoe_store
+Single shop ,store
+Bingo Hall ,movie_theater
+Pub/wine bar/bar ,bar
+Train station - elsewhere ,train_station
+Community centre/Hall ,city_hall
+"Takeaway, fast food ",meal_delivery
+"Takeaway, fast food ",meal_takeaway
+Other bulk storage,storage
+Hospital ,hospital
+Sports pavilion/shower block/changing facility ,gym
+Other Religious Use Building,church
+Restaurant/cafe,cafe
+Restaurant/cafe,restaurant
+Gym ,gym
+Other cultural venue ,amusement_park
+Church/Chapel ,church
+Sports/Social club ,gym
+Other retail  ,store
+Library ,library
+Law Courts ,courthouse
+Ministry of Defence office,local_government_office
+Furniture warehouse ,furniture_store
+Zoo ,aquarium
+Zoo ,zoo
+Other entertainment venue ,movie_theater
+Mosque ,mosque
+Vehicle Repair Workshop,car_repair
+Health spa/farm,physiotherapist
+Health spa/farm,spa
+Rugby Stadium ,stadium
+Local Government Office,local_government_office
+Theatre ,movie_theater
+Electrical warehouse ,electronics_store
