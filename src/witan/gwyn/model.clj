@@ -1,9 +1,9 @@
-(ns kixi.gwyn.model
+(ns witan.gwyn.model
   (:require [witan.workspace-api :refer [defmodel]]
             [witan.workspace-api.protocols :as p]
             [witan.workspace-api.utils :refer [map-fn-meta
                                                map-model-meta]]
-            [kixi.gwyn.gwyn :as g]))
+            [witan.gwyn.gwyn :as g]))
 
 (def gwyn-model-workflow
   "Define each step of the model"

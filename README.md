@@ -1,8 +1,8 @@
-# kixi.gwyn
+# witan.gwyn
 
 ## Description
 
-kixi.gwyn is a Clojure library for calculating fire risk assessment scores based on historical fire incidents.
+witan.gwyn is a Clojure library for calculating fire risk assessment scores based on historical fire incidents.
 
 This library makes extensive use of the tools in [witan.workspace-api](https://github.com/MastodonC/witan.workspace-api) to be run on the [workspace-executor](https://github.com/MastodonC/witan.workspace-executor).
 

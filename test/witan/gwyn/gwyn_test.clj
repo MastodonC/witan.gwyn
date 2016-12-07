@@ -1,9 +1,9 @@
-(ns kixi.gwyn.gwyn-test
+(ns witan.gwyn.gwyn-test
   (:require [clojure.test :refer :all]
-            [kixi.gwyn.gwyn :refer :all]
-            [kixi.gwyn.schemas :as sc]
+            [witan.gwyn.gwyn :refer :all]
+            [witan.gwyn.schemas :as sc]
             [schema.core :as s]
-            [kixi.gwyn.test-utils :as tu]
+            [witan.gwyn.test-utils :as tu]
             [witan.datasets :as wds]
             [clojure.core.matrix.dataset :as ds]))
 
