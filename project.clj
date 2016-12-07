@@ -1,4 +1,4 @@
-(defproject kixi.gwyn "0.1.0-SNAPSHOT"
+(defproject witan.gwyn "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -10,7 +10,7 @@
                  [prismatic/schema "1.1.3"]
                  [kixi/stats "0.2.1"]
                  [org.clojure/data.json "0.2.6"]]
-  :main ^:skip-aot kixi.gwyn
+  :main ^:skip-aot witan.gwyn.gwyn
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[witan.workspace-executor "0.2.6"
                                    :exclusions [witan.workspace-api]]]}})

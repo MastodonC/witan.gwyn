@@ -1,4 +1,4 @@
-(ns kixi.gwyn.utils)
+(ns witan.gwyn.utils)
 
 (defn make-coll [x]
   (cond

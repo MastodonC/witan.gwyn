@@ -1,4 +1,4 @@
-(ns kixi.gwyn.schemas
+(ns witan.gwyn.schemas
   (:require [schema.core :as s]))
 
 (defn make-ordered-ds-schema [col-vec]

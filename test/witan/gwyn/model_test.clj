@@ -1,10 +1,10 @@
-(ns kixi.gwyn.model-test
-  (:require [kixi.gwyn.model :as m]
+(ns witan.gwyn.model-test
+  (:require [witan.gwyn.model :as m]
             [clojure.test :refer :all]
-            [kixi.gwyn.gwyn :refer :all]
+            [witan.gwyn.gwyn :refer :all]
             [schema.core :as s]
-            [kixi.gwyn.schemas :as sc]
-            [kixi.gwyn.model :as m]
+            [witan.gwyn.schemas :as sc]
+            [witan.gwyn.model :as m]
             [witan.workspace-api.protocols :as p]))
 
 (deftest validate-models
@@ -31,8 +31,8 @@
                         (is (not (s/check param-schema params)))))))))))))
     (testing "The catalog entries are existing functions"
       (let [library-fns (map #(:witan/impl %) funs)
-            model-ns-list (map str (keys (ns-publics 'kixi.gwyn.gwyn)))
-            model-ns-fns (map #(keyword (format "kixi.gwyn.gwyn/%s" %)) model-ns-list)]
+            model-ns-list (map str (keys (ns-publics 'witan.gwyn.gwyn)))
+            model-ns-fns (map #(keyword (format "witan.gwyn.gwyn/%s" %)) model-ns-list)]
         (is (every? (set model-ns-fns) library-fns))))
     (testing "Are there duplicates in contracts?"
       (let [counts-by-key (reduce (fn [a [k v]]

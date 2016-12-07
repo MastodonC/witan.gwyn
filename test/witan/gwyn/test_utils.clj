@@ -1,8 +1,8 @@
-(ns kixi.gwyn.test-utils
+(ns witan.gwyn.test-utils
   (:require  [clojure.data.csv :as data-csv]
              [clojure.java.io :as io]
              [schema.coerce :as coerce]
-             [kixi.gwyn.schemas :as sc]
+             [witan.gwyn.schemas :as sc]
              [schema.core :as s]
              [clojure.core.matrix.dataset :as ds]))
 

@@ -1,13 +1,13 @@
-(ns kixi.gwyn.gwyn
+(ns witan.gwyn.gwyn
   (:require [witan.workspace-api :refer [defworkflowfn
                                          definput
                                          defworkflowoutput]]
             [schema.core :as s]
-            [kixi.gwyn.schemas :as sc]
+            [witan.gwyn.schemas :as sc]
             [clojure.core.matrix.dataset :as ds]
             [witan.datasets :as wds]
             [witan.datasets.stats :as wst]
-            [kixi.gwyn.utils :as u]
+            [witan.gwyn.utils :as u]
             [kixi.stats.core :refer [mean standard-deviation]]
             [clojure.data.json :as json]))
 
