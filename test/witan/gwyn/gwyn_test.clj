@@ -4,6 +4,7 @@
             [witan.gwyn.schemas :as sc]
             [schema.core :as s]
             [witan.gwyn.test-utils :as tu]
+            [witan.gwyn.utils :as u]
             [witan.datasets :as wds]
             [clojure.core.matrix.dataset :as ds]
             [clojure.set :as clj-set]))
@@ -120,7 +121,7 @@
       (is (= (set (:column-names result-data))
              #{:address :name :type}))
       (is (every? empty?
-                  (map #(clj-set/intersection % (set unwanted-properties))
+                  (map #(clj-set/intersection % (set u/unwanted-property-types))
                        all-types)))
       (is (not (contains? all-types #{}))))))
 

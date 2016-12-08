@@ -74,10 +74,6 @@
             :id (get json-entry "id")
             :name (get json-entry "name")))
 
-(def unwanted-properties
-  (edn/read-string
-   (slurp (io/file "data/unwanted_property_types.edn"))))
-
 (defn remove-unwanted-types [ds coll]
   (ds/replace-column ds :type (apply (partial map (fn [t]
                                                     (clj-set/difference t (set coll))))
@@ -87,7 +83,7 @@
   [properties-dataset]
   (-> properties-dataset
       (ds/select-columns [:address :name :type])
-      (remove-unwanted-types unwanted-properties)
+      (remove-unwanted-types u/unwanted-property-types)
       (wds/select-from-ds {:type {:nin #{#{}}}})))
 
 (defworkflowfn list-commercial-properties-1-0-0
