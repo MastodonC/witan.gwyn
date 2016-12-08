@@ -1,1 +1,2 @@
-address,name,risk-score,date-last-risk-assessedfoo,foo-bar,1,20/12/84
+address,name,risk-score,date-last-risk-assessed
+foo,foo-bar,1,2016-12-08T20:17:35+00:00
