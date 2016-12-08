@@ -38,7 +38,7 @@
                            [:long java.lang.Double]]))
 
 (def CommercialProperties
-  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:type #{s/Str}] [:id s/Str]]))
+  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:type #{s/Str}]]))
 
 (def CommercialPropertyTypes
   (make-ordered-ds-schema [[:property-type s/Str]

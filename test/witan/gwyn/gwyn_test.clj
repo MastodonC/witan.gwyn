@@ -5,7 +5,8 @@
             [schema.core :as s]
             [witan.gwyn.test-utils :as tu]
             [witan.datasets :as wds]
-            [clojure.core.matrix.dataset :as ds]))
+            [clojure.core.matrix.dataset :as ds]
+            [clojure.set :as clj-set]))
 
 (def data-info
   {:lfb-historic-incidents ["data/lfb_historical_fire_non_residential.csv"
@@ -113,10 +114,15 @@
 (deftest list-commercial-properties-test
   (testing "function returns properties in the first station's area"
     (let [result (list-commercial-properties-1-0-0 foo-location)
-          result-data (:commercial-properties result)]
+          result-data (:commercial-properties result)
+          all-types (set (wds/subset-ds result-data :cols :type))]
       (is (ds/dataset? result-data))
       (is (= (set (:column-names result-data))
-             #{:address :name :type :id})))))
+             #{:address :name :type}))
+      (is (every? empty?
+                  (map #(clj-set/intersection % (set unwanted-properties))
+                       all-types)))
+      (is (not (contains? all-types #{}))))))
 
 (deftest associate-risk-score-to-commercial-properties-test
   (testing "function returns properties with added cols :risk-score & :date-last-risk-assessed"

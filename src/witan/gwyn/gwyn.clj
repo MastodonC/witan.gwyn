@@ -9,7 +9,10 @@
             [witan.datasets.stats :as wst]
             [witan.gwyn.utils :as u]
             [kixi.stats.core :refer [mean standard-deviation]]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.set :as clj-set]
+            [clojure.java.io :as io]
+            [clojure.edn :as edn]))
 
 (definput fire-station-lookup-table-1-0-0
   {:witan/name :fire-risk/fire-station-lookup-table
@@ -71,6 +74,22 @@
             :id (get json-entry "id")
             :name (get json-entry "name")))
 
+(def unwanted-properties
+  (edn/read-string
+   (slurp (io/file "data/unwanted_property_types.edn"))))
+
+(defn remove-unwanted-types [ds coll]
+  (ds/replace-column ds :type (apply (partial map (fn [t]
+                                                    (clj-set/difference t (set coll))))
+                                     (map #(ds/column ds %) [:type]))))
+
+(defn clean-properties-dataset
+  [properties-dataset]
+  (-> properties-dataset
+      (ds/select-columns [:address :name :type])
+      (remove-unwanted-types unwanted-properties)
+      (wds/select-from-ds {:type {:nin #{#{}}}})))
+
 (defworkflowfn list-commercial-properties-1-0-0
   {:witan/name :fire-risk/list-commercial-properties
    :witan/version "1.0.0"
@@ -86,7 +105,8 @@
      (->> (parse-google-places url)
           (map collect-property)
           (into [])
-          ds/dataset))})
+          ds/dataset
+          clean-properties-dataset))})
 
 (defworkflowfn group-commercial-properties-type-1-0-0
   "Takes in LFB historical incidents data for fires in non-residential properties.
@@ -153,16 +173,6 @@
                            adjust-avg-num-pumps
                            sort-by-pumps-and-fires
                            assign-generic-scores)})
-
-(defn remove-unwanted-types [ds type-str]
-  (ds/replace-column ds :type (apply (partial map (fn [t] (set (remove #{type-str} t))))
-                                     (map #(ds/column ds %) [:type]))))
-
-(defn filter-unused-types [dataset]
-  (-> dataset
-      (wds/filter-dataset [:type] (fn [t] (not= t #{"locality" "political"})))
-      (remove-unwanted-types "establishment")
-      (remove-unwanted-types "point_of_interest")))
 
 (defworkflowfn associate-risk-score-to-commercial-properties-1-0-0
   {:witan/name :fire-risk/associate-risk-score-to-commercial-properties
