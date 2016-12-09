@@ -109,7 +109,7 @@
       (is (= (set (:column-names result-data))
              #{:address :name :type}))
       (is (every? empty?
-                  (map #(clj-set/intersection % (set u/unwanted-property-types))
+                  (map #(clj-set/intersection % (set unwanted-property-types))
                        all-types)))
       (is (not (contains? all-types #{}))))))
 
