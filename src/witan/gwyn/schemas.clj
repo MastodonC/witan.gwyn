@@ -32,7 +32,7 @@
 
 (def HistoricalFireRiskScores
   (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
-                           [:date-last-risk-assessed sc/ISO-Date-Time]]))
+                           [:date-last-risk-assessed (s/maybe sc/Date)]]))
 
 (def FireStationGeoData
   (make-ordered-ds-schema [[:radius java.lang.Double] [:lat java.lang.Double]
@@ -53,15 +53,15 @@
 
 (def CommercialPropertiesWithScores
   (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
-                           [:date-last-risk-assessed sc/ISO-Date-Time]]))
+                           [:date-last-risk-assessed (s/maybe sc/Date)]]))
 
 (def HistoricalFireRiskScores
   (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
-                           [:date-last-risk-assessed sc/ISO-Date-Time]]))
+                           [:date-last-risk-assessed (s/maybe sc/Date)]]))
 
 (def NewFireRiskScores
   (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
-                           [:date-last-risk-assessed sc/ISO-Date-Time]]))
+                           [:date-last-risk-assessed (s/maybe sc/Date)]]))
 
 (def PropertyComparison
   (make-ordered-ds-schema [[:lfb-property-type s/Str] [:google-property-type s/Str]]))

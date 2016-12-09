@@ -200,7 +200,7 @@
          risk-score 1.0] ;;;; to be replaced with joining
      (-> commercial-properties
          (ds/add-column :risk-score (repeat n risk-score))
-         (ds/add-column :date-last-risk-assessed (repeat n (str (t/now))))
+         (ds/add-column :date-last-risk-assessed (repeat n nil))
          (ds/select-columns [:address :name :risk-score :date-last-risk-assessed])))})
 
 (defworkflowfn join-historical-and-new-scores-1-0-0
