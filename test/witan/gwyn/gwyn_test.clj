@@ -115,13 +115,16 @@
 
 (deftest associate-risk-score-to-commercial-properties-test
   (testing "function returns properties with added cols :risk-score & :date-last-risk-assessed"
-    (let [result (reduce (fn [acc func] (merge acc (func acc)))
+    (let [input-map (reduce (fn [acc func] (merge acc (func acc)))
                          test-data
                          [group-commercial-properties-type-1-0-0
                           generic-commercial-properties-fire-risk-1-0-0
-                          list-commercial-properties-1-0-0
-                          associate-risk-score-to-commercial-properties-1-0-0])
+                          list-commercial-properties-1-0-0])
+          result (associate-risk-score-to-commercial-properties-1-0-0 input-map)
           result-data (:commercial-properties-with-scores result)]
+      (println result-data)
       (is (ds/dataset? result-data))
       (is (= (set (:column-names result-data))
-             #{:address :name :risk-score :date-last-risk-assessed})))))
+             #{:address :name :risk-score :date-last-risk-assessed}))
+      (is (not-empty (wds/subset-ds result-data :cols :risk-score)))
+      (is (every? nil? (wds/subset-ds result-data :cols :date-last-risk-assessed))))))

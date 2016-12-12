@@ -11,3 +11,7 @@
   (if (zero? dd)
     0.0
     (/ ^double d dd)))
+
+(defn average
+  [x xs]
+  (safe-divide (apply + xs) x))
