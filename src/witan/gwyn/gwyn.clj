@@ -9,7 +9,11 @@
             [witan.datasets.stats :as wst]
             [witan.gwyn.utils :as u]
             [kixi.stats.core :refer [mean standard-deviation]]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.set :as clj-set]
+            [clojure.java.io :as io]
+            [clojure.edn :as edn]
+            [clj-time.core :as t]))
 
 (definput fire-station-lookup-table-1-0-0
   {:witan/name :fire-risk/fire-station-lookup-table
@@ -67,9 +71,35 @@
 
 (defn collect-property [json-entry]
   (hash-map :address (get json-entry "vicinity")
-            :type (get json-entry "types")
+            :type (set (get json-entry "types"))
             :id (get json-entry "id")
             :name (get json-entry "name")))
+
+(def unwanted-property-types
+  #{"administrative_area_level_1" "administrative_area_level_2"
+    "administrative_area_level_3" "administrative_area_level_4"
+    "administrative_area_level_5" "colloquial_area"
+    "country" "establishment" "finance" "floor" "food"
+    "general_contractor" "geocode" "health" "intersection"
+    "locality" "natural_feature" "neighborhood" "place_of_worship"
+    "political" "point_of_interest" "post_box" "postal_code"
+    "postal_code_prefix" "postal_code_suffix" "postal_town"
+    "premise" "room" "route" "street_address" "street_number"
+    "sublocality" "sublocality_level_4" "sublocality_level_5"
+    "sublocality_level_3" "sublocality_level_2"
+    "sublocality_level_1" "subpremise"})
+
+(defn remove-unwanted-types [ds coll]
+  (ds/replace-column ds :type (apply (partial map (fn [t]
+                                                    (clj-set/difference t (set coll))))
+                                     (map #(ds/column ds %) [:type]))))
+
+(defn clean-properties-dataset
+  [properties-dataset]
+  (-> properties-dataset
+      (ds/select-columns [:address :name :type])
+      (remove-unwanted-types unwanted-property-types)
+      (wds/select-from-ds {:type {:nin #{#{}}}})))
 
 (defworkflowfn list-commercial-properties-1-0-0
   {:witan/name :fire-risk/list-commercial-properties
@@ -86,7 +116,8 @@
      (->> (parse-google-places url)
           (map collect-property)
           (into [])
-          ds/dataset))})
+          ds/dataset
+          clean-properties-dataset))})
 
 (defworkflowfn group-commercial-properties-type-1-0-0
   "Takes in LFB historical incidents data for fires in non-residential properties.
@@ -158,10 +189,19 @@
   {:witan/name :fire-risk/associate-risk-score-to-commercial-properties
    :witan/version "1.0.0"
    :witan/input-schema {:generic-fire-risks sc/GenericFireRisk
-                        :commercial-properties sc/CommercialProperties}
+                        :commercial-properties sc/CommercialProperties
+                        :property-comparison sc/PropertyComparison}
    :witan/output-schema {:commercial-properties-with-scores sc/CommercialPropertiesWithScores}}
-  [{:keys [generic-fire-risks commercial-properties]} _]
-  {:commercial-properties-with-scores {}})
+  [{:keys [generic-fire-risks commercial-properties property-comparison]} _]
+  {:commercial-properties-with-scores
+   (let [n (-> commercial-properties
+               :shape
+               first)
+         risk-score 1.0] ;;;; to be replaced with joining
+     (-> commercial-properties
+         (ds/add-column :risk-score (repeat n risk-score))
+         (ds/add-column :date-last-risk-assessed (repeat n nil))
+         (ds/select-columns [:address :name :risk-score :date-last-risk-assessed])))})
 
 (defworkflowfn join-historical-and-new-scores-1-0-0
   {:witan/name :fire-risk/join-historical-and-new-scores
@@ -170,7 +210,7 @@
                         :historical-fire-risk-scores sc/HistoricalFireRiskScores}
    :witan/output-schema {:historical-and-new-scores sc/HistoricalFireRiskScores}}
   [{:keys [commercial-properties-with-scores historical-fire-risk-scores]} _]
-  {:historical-and-new-scores {}})
+  {:historical-and-new-scores commercial-properties-with-scores})
 
 (defworkflowfn update-score-1-0-0
   {:witan/name :fire-risk/update-score
@@ -178,7 +218,7 @@
    :witan/input-schema {:historical-and-new-scores sc/HistoricalFireRiskScores}
    :witan/output-schema {:new-fire-risk-scores sc/NewFireRiskScores}}
   [{:keys [historical-and-new-scores]} _]
-  {:new-fire-risk-scores {}})
+  {:new-fire-risk-scores historical-and-new-scores})
 
 (defworkflowoutput output-new-fire-risk-scores-1-0-0
   {:witan/name :fire-risk/output-new-fire-risk-scores

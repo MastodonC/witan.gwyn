@@ -5,19 +5,26 @@
             [witan.gwyn.schemas :as sc]
             [witan.gwyn.model :as m]
             [witan.workspace-api.protocols :as p]
-            [witan.workspace-executor.core :as wex]))
+            [witan.workspace-executor.core :as wex]
+            [witan.gwyn.test-utils :as tu]))
 
 (def test-inputs
-  {:fire-stations-lookup {}
-   :lfb-historic-incidents {}
-   :historical-fire-risk-scores {}})
+  {:fire-stations-lookup ["data/fire_station_data.csv"
+                          sc/FireStations]
+   :lfb-historic-incidents ["data/lfb_historical_fire_non_residential.csv"
+                            sc/LfbHistoricIncidents]
+   :historical-fire-risk-scores ["data/template-historical-fire-risk-scores.csv"
+                                 sc/HistoricalFireRiskScores]
+   :property-comparison ["data/lfb_to_google.csv"
+                         sc/PropertyComparison]})
 
-(defn read-inputs [input _ schema]
-  (get test-inputs (:witan/name input)))
+(defn read-inputs [data input _ schema]
+  (let [[filepath fileschema] (get data (:witan/name input))]
+    (tu/csv-to-dataset filepath fileschema)))
 
 (defn add-input-params
   [input]
-  (assoc-in input [:witan/params :fn] (partial read-inputs input)))
+  (assoc-in input [:witan/params :fn] (partial read-inputs test-inputs input)))
 
 (deftest gwyn-workspace-test
   (testing "The model is run on the workspace and returns the outputs expected"
@@ -29,5 +36,4 @@
           workspace'    (s/with-fn-validation (wex/build! workspace))
           result        (apply merge (wex/run!! workspace' {}))]
       (is result)
-      ;;(is (:new-fire-risk-scores result))
-      )))
+      (is (:new-fire-risk-scores result)))))

@@ -9,7 +9,10 @@
                  [witan.workspace-api "0.1.22"]
                  [prismatic/schema "1.1.3"]
                  [kixi/stats "0.2.1"]
-                 [org.clojure/data.json "0.2.6"]]
+                 [org.clojure/data.json "0.2.6"]
+                 [clj-time "0.12.2"]
+                 [schema-contrib "0.1.3"]
+                 [instaparse "1.4.3"]]
   :main ^:skip-aot witan.gwyn.gwyn
   :target-path "target/%s"
   :profiles {:dev {:dependencies [[witan.workspace-executor "0.2.6"
