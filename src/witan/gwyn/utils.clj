@@ -13,5 +13,5 @@
     (/ ^double d dd)))
 
 (defn average
-  [x xs]
-  (safe-divide (apply + xs) x))
+  [xs]
+  (safe-divide (apply + xs) (count xs)))

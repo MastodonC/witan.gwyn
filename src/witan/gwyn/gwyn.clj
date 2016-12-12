@@ -138,7 +138,7 @@
                   (merge map-key
                          {:num-fires n
                           :avg-pumps-attending
-                          (u/average n coll-pumps-attending)
+                          (u/average coll-pumps-attending)
                           :sd-pumps-attending (wst/standard-deviation
                                                coll-pumps-attending)}))))
         ds/dataset)})
@@ -193,7 +193,7 @@
                          (wds/subset-ds :cols :generic-fire-risk-score))
                     types)
         clean-scores (filter #(instance? Number %) scores)]
-    (u/average (count clean-scores) clean-scores)))
+    (u/average clean-scores)))
 
 (defworkflowfn associate-risk-score-to-commercial-properties-1-0-0
   {:witan/name :fire-risk/associate-risk-score-to-commercial-properties
