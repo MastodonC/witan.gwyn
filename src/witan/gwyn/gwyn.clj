@@ -5,6 +5,7 @@
             [schema.core :as s]
             [witan.gwyn.schemas :as sc]
             [clojure.core.matrix.dataset :as ds]
+            [clojure.core.matrix :as mx]
             [witan.datasets :as wds]
             [witan.datasets.stats :as wst]
             [witan.gwyn.utils :as u]
@@ -131,14 +132,13 @@
   {:commercial-properties-by-type
    (->> (wds/group-ds lfb-historic-incidents :property-type)
         (mapv (fn [[map-key ds]]
-                (let [n (first (:shape ds))
-                      avg (fn [coll] (u/safe-divide (apply + coll) n))
+                (let [n (mx/row-count ds)
                       coll-pumps-attending (u/make-coll
                                             (wds/subset-ds ds :cols :num-pumps-attending))]
                   (merge map-key
                          {:num-fires n
                           :avg-pumps-attending
-                          (avg coll-pumps-attending)
+                          (u/average coll-pumps-attending)
                           :sd-pumps-attending (wst/standard-deviation
                                                coll-pumps-attending)}))))
         ds/dataset)})
@@ -166,7 +166,7 @@
   "Takes in the properties dataset sorted by pumps and fires.
    Use the sorting order to assign a score to each property type."
   [sorted-properties-data]
-  (let [range-data (range 1 (-> sorted-properties-data :shape first inc))]
+  (let [range-data (range 1 (-> sorted-properties-data mx/row-count inc))]
     (-> sorted-properties-data
         (ds/add-column :generic-fire-risk-score range-data)
         (ds/select-columns [:property-type :generic-fire-risk-score]))))
@@ -185,6 +185,16 @@
                            sort-by-pumps-and-fires
                            assign-generic-scores)})
 
+(defn lookup-score
+  [lookup-ds types]
+  (let [scores (map #(-> lookup-ds
+                         (wds/select-from-ds {:google-property-type
+                                              {:eq %}})
+                         (wds/subset-ds :cols :generic-fire-risk-score))
+                    types)
+        clean-scores (filter #(instance? Number %) scores)]
+    (u/average clean-scores)))
+
 (defworkflowfn associate-risk-score-to-commercial-properties-1-0-0
   {:witan/name :fire-risk/associate-risk-score-to-commercial-properties
    :witan/version "1.0.0"
@@ -194,13 +204,15 @@
    :witan/output-schema {:commercial-properties-with-scores sc/CommercialPropertiesWithScores}}
   [{:keys [generic-fire-risks commercial-properties property-comparison]} _]
   {:commercial-properties-with-scores
-   (let [n (-> commercial-properties
-               :shape
-               first)
-         risk-score 1.0] ;;;; to be replaced with joining
+   (let [comparison-scores (wds/join (ds/rename-columns generic-fire-risks
+                                                        {:property-type :lfb-property-type})
+                                     property-comparison
+                                     [:lfb-property-type])]
      (-> commercial-properties
-         (ds/add-column :risk-score (repeat n risk-score))
-         (ds/add-column :date-last-risk-assessed (repeat n nil))
+         (wds/add-derived-column :risk-score
+                                 [:type] (fn [t] (lookup-score comparison-scores t)))
+         (ds/add-column :date-last-risk-assessed (repeat (mx/row-count commercial-properties)
+                                                         nil))
          (ds/select-columns [:address :name :risk-score :date-last-risk-assessed])))})
 
 (defworkflowfn join-historical-and-new-scores-1-0-0

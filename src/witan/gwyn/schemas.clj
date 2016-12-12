@@ -30,10 +30,6 @@
   (make-ordered-ds-schema [[:property-type s/Str]
                            [:num-pumps-attending s/Int]]))
 
-(def HistoricalFireRiskScores
-  (make-ordered-ds-schema [[:address s/Str] [:name s/Str] [:risk-score java.lang.Double]
-                           [:date-last-risk-assessed (s/maybe sc/Date)]]))
-
 (def FireStationGeoData
   (make-ordered-ds-schema [[:radius java.lang.Double] [:lat java.lang.Double]
                            [:long java.lang.Double]]))
