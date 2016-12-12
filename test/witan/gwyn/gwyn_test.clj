@@ -18,9 +18,7 @@
                                  sc/HistoricalFireRiskScores]})
 
 (def test-data
-  (merge (tu/to-dataset data-info)
-         {:fire-station-geo-data
-          (ds/dataset [{:radius 1000.1 :lat 51.43444023 :long -0.346214694}])}))
+  (tu/to-dataset data-info))
 
 (deftest group-commercial-properties-type-test
   (testing "The function returns the properties data needed for score calc"
@@ -102,7 +100,9 @@
 
 (deftest list-commercial-properties-test
   (testing "function returns properties in the first station's area"
-    (let [result (list-commercial-properties-1-0-0 test-data)
+    (let [result (list-commercial-properties-1-0-0 (merge test-data
+                                                          (extract-fire-station-geo-data-1-0-0
+                                                           test-data {:fire-station "Twickenham"})))
           result-data (:commercial-properties result)
           all-types (set (wds/subset-ds result-data :cols :type))]
       (is (ds/dataset? result-data))
@@ -119,6 +119,8 @@
                             test-data
                             [group-commercial-properties-type-1-0-0
                              generic-commercial-properties-fire-risk-1-0-0
+                             #(extract-fire-station-geo-data-1-0-0
+                               % {:fire-station "Twickenham"})
                              list-commercial-properties-1-0-0])
           result (associate-risk-score-to-commercial-properties-1-0-0 input-map)
           result-data (:commercial-properties-with-scores result)]
