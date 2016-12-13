@@ -81,11 +81,11 @@
     "administrative_area_level_3" "administrative_area_level_4"
     "administrative_area_level_5" "colloquial_area"
     "country" "establishment" "finance" "floor" "food"
-    "general_contractor" "geocode" "health" "intersection"
-    "locality" "natural_feature" "neighborhood" "place_of_worship"
-    "political" "point_of_interest" "post_box" "postal_code"
-    "postal_code_prefix" "postal_code_suffix" "postal_town"
-    "premise" "room" "route" "street_address" "street_number"
+    "general_contractor" "grocery_or_supermarket" "geocode"
+    "health" "intersection" "locality" "natural_feature"
+    "neighborhood" "place_of_worship" "political" "point_of_interest"
+    "post_box" "postal_code" "postal_code_prefix" "postal_code_suffix"
+    "postal_town" "premise" "room" "route" "street_address" "street_number"
     "sublocality" "sublocality_level_4" "sublocality_level_5"
     "sublocality_level_3" "sublocality_level_2"
     "sublocality_level_1" "subpremise"})
@@ -191,9 +191,8 @@
                          (wds/select-from-ds {:google-property-type
                                               {:eq %}})
                          (wds/subset-ds :cols :generic-fire-risk-score))
-                    types)
-        clean-scores (filter #(instance? Number %) scores)]
-    (u/average clean-scores)))
+                    types)]
+    (u/average (flatten scores))))
 
 (defworkflowfn associate-risk-score-to-commercial-properties-1-0-0
   {:witan/name :fire-risk/associate-risk-score-to-commercial-properties
