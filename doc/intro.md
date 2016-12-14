@@ -10,6 +10,7 @@
 
 The model expects *five inputs*: four datasets and a parameter. And it returns *one output*: a dataset.
 
+**Note**: The last step that uses the historical fire risk scores to update the newly produced risk scores is not currently implemented and the model outputs the new risk scores.
 
 ## Input datasets
 
@@ -40,7 +41,7 @@ The lower the score, the lower the risk.
 2. In parallel the list of LFB historical fires in non-residential properties is used to generate generic fire risk assessment scores. Those scores take into account the number of fires that happened at properties of a particular type and how many pumps were used to put out the fire.
 
 3. The ouput of the two previous steps are then combined to associate each property from the list of non-residential properties (generated in `1.`) with a risk score (using the generic scores calculated for each property type in `2.`).
-Note: This step relies on matching property types between the result of step `1.` and `2.`. For that reason we need the `Google Places / LFB property types` lookup table and we calculate an average if a property has several types associated to it.
+**Note**: This step relies on matching property types between the result of step `1.` and `2.`. For that reason we need the `Google Places / LFB property types` lookup table and we calculate an average if a property has several types associated to it.
 
-4. This last step will be implementated once the model has already been run.
+4. This last step will be implemented once the model has already been run.
 The information from the `Historical fire risk scores` will help update the fire risk assessment scores by lowering the score if a property has recently undergone a physical inspection from the LFB.
