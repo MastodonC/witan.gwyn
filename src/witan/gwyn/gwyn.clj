@@ -11,10 +11,7 @@
             [witan.gwyn.utils :as u]
             [kixi.stats.core :refer [mean standard-deviation]]
             [clojure.data.json :as json]
-            [clojure.set :as clj-set]
-            [clojure.java.io :as io]
-            [clojure.edn :as edn]
-            [clj-time.core :as t]))
+            [clojure.set :as clj-set]))
 
 (definput fire-station-lookup-table-1-0-0
   {:witan/name :fire-risk/fire-station-lookup-table
