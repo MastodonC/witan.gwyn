@@ -20,6 +20,8 @@
                          sc/PropertyComparison]
    :fire-station "Twickenham"})
 
+(def stations (map first (:columns (tu/load-csv (first (:fire-stations-lookup test-inputs))))))
+
 (defn param-input [area]
   (assoc test-inputs :fire-station area))
 
