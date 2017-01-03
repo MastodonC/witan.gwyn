@@ -16,7 +16,9 @@
    :historical-fire-risk-scores ["data/template-historical-fire-risk-scores.csv"
                                  sc/HistoricalFireRiskScores]
    :property-comparison ["data/lfb_to_google.csv"
-                         sc/PropertyComparison]})
+                         sc/PropertyComparison]
+   :fire-station "Twickenham"})
+
 
 (defn read-inputs [data input _ schema]
   (let [[filepath fileschema] (get data (:witan/name input))]
