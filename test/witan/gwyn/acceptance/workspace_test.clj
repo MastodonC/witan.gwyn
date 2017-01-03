@@ -6,7 +6,8 @@
             [witan.gwyn.model :as m]
             [witan.workspace-api.protocols :as p]
             [witan.workspace-executor.core :as wex]
-            [witan.gwyn.test-utils :as tu]))
+            [witan.gwyn.test-utils :as tu]
+            [clojure.core.matrix.dataset :as ds]))
 
 (def test-inputs
   {:fire-stations-lookup ["data/fire_station_data.csv"
@@ -37,6 +38,6 @@
                          :contracts (p/available-fns (m/model-library))}
           workspace'    (s/with-fn-validation (wex/build! workspace))
           result        (apply merge (wex/run!! workspace' {}))]
-      (println result)
+      ;;(clojure.pprint/pprint (map :address (ds/row-maps (:new-fire-risk-scores result))))
       (is result)
       (is (:new-fire-risk-scores result)))))
