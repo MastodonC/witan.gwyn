@@ -20,6 +20,8 @@
                          sc/PropertyComparison]
    :fire-station "Twickenham"})
 
+(defn param-input [area]
+  (assoc test-inputs :fire-station area))
 
 (defn read-inputs [data input _ schema]
   (let [[filepath fileschema] (get data (:witan/name input))]
@@ -41,3 +43,16 @@
       ;;(clojure.pprint/pprint (map :address (ds/row-maps (:new-fire-risk-scores result))))
       (is result)
       (is (:new-fire-risk-scores result)))))
+
+(defn run-in-repl [input]
+  (let [fixed-catalog (mapv #(if (= (:witan/type %) :input)
+                               (add-input-params %)
+                               (if (get-in % [:witan/params :fire-station])
+                                 (assoc-in % [:witan/params :fire-station] (:fire-station input))
+                                 %))
+                            (:catalog m/gwyn-model))
+        workspace     {:workflow  (:workflow m/gwyn-model)
+                       :catalog   fixed-catalog
+                       :contracts (p/available-fns (m/model-library))}
+        workspace'    (s/with-fn-validation (wex/build! workspace))]
+    (apply merge (wex/run!! workspace' {}))))
